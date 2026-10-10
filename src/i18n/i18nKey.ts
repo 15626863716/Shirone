@@ -202,6 +202,15 @@ enum I18nKey {
 	calendarPrevMonth = "calendarPrevMonth",
 	calendarNextMonth = "calendarNextMonth",
 
+	siteInfo = "siteInfo",
+	siteBuildPlatform = "siteBuildPlatform",
+	siteBlogVersion = "siteBlogVersion",
+	siteDomain = "siteDomain",
+	siteAstroVersion = "siteAstroVersion",
+	siteNodeVersion = "siteNodeVersion",
+	sitePnpmVersion = "sitePnpmVersion",
+	siteSystemInfo = "siteSystemInfo",
+
 	mermaidControls = "mermaidControls",
 	mermaidZoomIn = "mermaidZoomIn",
 	mermaidZoomOut = "mermaidZoomOut",

@@ -1,0 +1,146 @@
+---
+/**
+ * 站点信息侧栏 widget：构建平台 / 博客版本 / 域名 / Astro·Node·pnpm 版本 /
+ * 系统信息 / 文章许可。数据全部构建期读取（SSR 静态直出，无客户端脚本、
+ * 无运行时开销）；行样式与 SiteStats 的规格表语言同源。
+ */
+import MetaIcon from "@components/atoms/display/MetaIcon.astro";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import os from "node:os";
+import { version as astroVersion } from "astro/package.json";
+import { licenseConfig } from "@/config";
+import { profileConfig } from "@/config";
+import { siteConfig } from "@/config";
+import { version as blogVersion, packageManager } from "../../../package.json";
+import type { SiteInfoWidget } from "@/types/sidebarConfig";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+	class?: string;
+	style?: string;
+	widget?: SiteInfoWidget;
+}
+
+const className = Astro.props.class;
+const style = Astro.props.style;
+
+// 部署平台标识：仓库含 vercel.json，默认 Vercel；按实际托管平台修改此常量
+const BUILD_PLATFORM = "Vercel";
+
+const pnpmVersion = packageManager.startsWith("pnpm@")
+	? packageManager.slice("pnpm@".length)
+	: packageManager;
+const siteHostname = (() => {
+	try {
+		return new URL(siteConfig.site).hostname;
+	} catch {
+		return siteConfig.site;
+	}
+})();
+
+const rows = [
+	{
+		icon: "material-symbols:rocket-launch-outline-rounded",
+		label: i18n(I18nKey.siteBuildPlatform),
+		value: BUILD_PLATFORM,
+	},
+	{
+		icon: "material-symbols:verified-outline-rounded",
+		label: i18n(I18nKey.siteBlogVersion),
+		value: `v${blogVersion}`,
+	},
+	{
+		icon: "material-symbols:language-rounded",
+		label: i18n(I18nKey.siteDomain),
+		value: siteHostname,
+	},
+	{
+		icon: "material-symbols:bolt-outline-rounded",
+		label: i18n(I18nKey.siteAstroVersion),
+		value: `v${astroVersion}`,
+	},
+	{
+		icon: "material-symbols:memory-outline-rounded",
+		label: i18n(I18nKey.siteNodeVersion),
+		value: process.version,
+	},
+	{
+		icon: "material-symbols:package-2-outline-rounded",
+		label: i18n(I18nKey.sitePnpmVersion),
+		value: `v${pnpmVersion}`,
+	},
+	{
+		icon: "material-symbols:desktop-windows-outline-rounded",
+		label: i18n(I18nKey.siteSystemInfo),
+		value: `${os.platform()} / ${os.arch()}`,
+	},
+	{
+		icon: "material-symbols:copyright-outline-rounded",
+		label: i18n(I18nKey.license),
+		value: licenseConfig.enable ? licenseConfig.name : "—",
+	},
+];
+
+const authorName = profileConfig.name;
+---
+
+<WidgetLayout
+	name={i18n(I18nKey.siteInfo)}
+	id="site-info"
+	class={className}
+	style={style}
+>
+	<ul class="m3-site-info">
+		{rows.map((row) => (
+			<li class="m3-site-info__row">
+				<MetaIcon icon={row.icon} />
+				<span class="m3-site-info__label">{row.label}</span>
+				<span class="m3-site-info__rule" aria-hidden="true"></span>
+				<span class="m3-site-info__value" title={`${row.label} · ${authorName}`}
+					>{row.value}</span
+				>
+			</li>
+		))}
+	</ul>
+</WidgetLayout>
+
+<style lang="stylus">
+.m3-site-info
+	display: flex
+	flex-direction: column
+	gap: var(--m3e-space-2)
+	margin: 0
+	padding: 0
+	list-style: none
+
+	&__row
+		display: flex
+		align-items: center
+		gap: var(--m3e-space-2)
+		min-width: 0
+
+	&__label
+		font: var(--m3e-type-body-medium)
+		font-weight: 500
+		color: var(--on-surface-variant)
+		white-space: nowrap
+
+	/* 点线引导：沉到文字基线附近，长度伸缩填满中段（与 SiteStats 同源） */
+	&__rule
+		flex: 1
+		align-self: flex-end
+		margin-bottom: 0.35em
+		min-width: 0.5rem
+		border-bottom: 2px dotted var(--outline-variant)
+
+	&__value
+		font: var(--m3e-type-title-small)
+		font-weight: 600
+		font-variant-numeric: tabular-nums
+		color: var(--on-surface)
+		white-space: nowrap
+		overflow: hidden
+		text-overflow: ellipsis
+		max-width: 9rem
+</style>

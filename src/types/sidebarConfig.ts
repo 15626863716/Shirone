@@ -145,6 +145,16 @@ export interface MusicWidget {
 	pages?: SidebarPage[];
 }
 
+/** 站点信息（构建平台/版本/域名/运行环境/文章许可，构建期读取） */
+export interface SiteInfoWidget {
+	type: "site-info";
+	enable: boolean;
+	slot: SidebarWidgetSlot;
+	column?: SidebarColumn;
+	/** 限定显示的页面，省略或空数组表示所有页面 */
+	pages?: SidebarPage[];
+}
+
 export type SidebarWidget =
 	| ProfileWidget
 	| CategoriesWidget
@@ -154,7 +164,8 @@ export type SidebarWidget =
 	| StatsWidget
 	| CalendarWidget
 	| TocWidget
-	| MusicWidget;
+	| MusicWidget
+	| SiteInfoWidget;
 
 /**
  * 侧栏整体配置。components 渲染顺序 = 数组顺序，top 恒排在 sticky 之前。

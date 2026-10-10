@@ -303,6 +303,8 @@ export const zh_TW: Translation = {
 	[Key.wallpaperMode]: "頁面背景",
 	[Key.wallpaperModeBanner]: "橫幅",
 	[Key.wallpaperModeNone]: "純色",
+	[Key.wallpaperModeFullscreen]: "全螢幕壁紙",
+	[Key.scrollDown]: "向下滑動查看內容",
 	[Key.texturePreset]: "背景紋理",
 	[Key.texturePresetNone]: "無紋理",
 	[Key.texturePresetStarlight]: "星芒光斑",

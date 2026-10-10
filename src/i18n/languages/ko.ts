@@ -313,6 +313,8 @@ export const ko: Translation = {
 	[Key.wallpaperMode]: "페이지 배경",
 	[Key.wallpaperModeBanner]: "배너",
 	[Key.wallpaperModeNone]: "단색",
+	[Key.wallpaperModeFullscreen]: "전체 화면 배경",
+	[Key.scrollDown]: "아래로 스크롤하여 내용 보기",
 	[Key.texturePreset]: "배경 텍스처",
 	[Key.texturePresetNone]: "없음",
 	[Key.texturePresetStarlight]: "별빛・빛무리",

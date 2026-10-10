@@ -302,6 +302,8 @@ export const th: Translation = {
 	[Key.wallpaperMode]: "พื้นหลังหน้า",
 	[Key.wallpaperModeBanner]: "แบนเนอร์",
 	[Key.wallpaperModeNone]: "สีพื้น",
+	[Key.wallpaperModeFullscreen]: "เต็มหน้าจอ",
+	[Key.scrollDown]: "เลื่อนลงเพื่อดูเนื้อหา",
 	[Key.texturePreset]: "พื้นผิวพื้นหลัง",
 	[Key.texturePresetNone]: "ไม่มี",
 	[Key.texturePresetStarlight]: "ประกายดาว",

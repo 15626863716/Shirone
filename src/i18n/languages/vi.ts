@@ -316,6 +316,8 @@ export const vi: Translation = {
 	[Key.wallpaperMode]: "Nền trang",
 	[Key.wallpaperModeBanner]: "Biểu ngữ",
 	[Key.wallpaperModeNone]: "Màu trơn",
+	[Key.wallpaperModeFullscreen]: "Toàn màn hình",
+	[Key.scrollDown]: "Cuộn xuống để xem nội dung",
 	[Key.texturePreset]: "Họa tiết nền",
 	[Key.texturePresetNone]: "Không có",
 	[Key.texturePresetStarlight]: "Ánh sao",

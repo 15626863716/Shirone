@@ -314,6 +314,8 @@ export const en: Translation = {
 	[Key.wallpaperMode]: "Page background",
 	[Key.wallpaperModeBanner]: "Banner",
 	[Key.wallpaperModeNone]: "Solid",
+	[Key.wallpaperModeFullscreen]: "Fullscreen",
+	[Key.scrollDown]: "Scroll to view content",
 	[Key.texturePreset]: "Background Texture",
 	[Key.texturePresetNone]: "None",
 	[Key.texturePresetStarlight]: "Starlight",

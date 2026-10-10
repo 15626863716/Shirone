@@ -8,7 +8,7 @@ export const THEME_CHANGE_EVENT: string = "shirone:theme-change";
 
 export const WALLPAPER_MODE_KEY = "wallpaper-mode";
 export const WALLPAPER_MODE_CHANGE_EVENT = "wallpaper-mode:change";
-export const WALLPAPER_MODE_OPTIONS = ["none", "banner"] as const;
+export const WALLPAPER_MODE_OPTIONS = ["none", "banner", "fullscreen"] as const;
 
 export const TEXTURE_PRESET_KEY = "texture-preset";
 export const TEXTURE_OPACITY_KEY = "texture-opacity";

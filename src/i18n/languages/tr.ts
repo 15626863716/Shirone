@@ -317,6 +317,8 @@ export const tr: Translation = {
 	[Key.wallpaperMode]: "Sayfa arka planı",
 	[Key.wallpaperModeBanner]: "Afiş",
 	[Key.wallpaperModeNone]: "Düz renk",
+	[Key.wallpaperModeFullscreen]: "Tam ekran",
+	[Key.scrollDown]: "İçeriği görmek için kaydırın",
 	[Key.texturePreset]: "Arka Plan Dokusu",
 	[Key.texturePresetNone]: "Yok",
 	[Key.texturePresetStarlight]: "Yıldız Işığı",

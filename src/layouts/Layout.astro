@@ -116,7 +116,7 @@ const hasMonoFont =
 ---
 
 <!DOCTYPE html>
-<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]">
+<html lang={siteLang} data-fullscreen-layout={siteConfig.wallpaperMode.fullscreenLayout ?? "classic"} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]">
 	<head>
 		<style is:inline>@layer properties, theme, base, components, utilities;</style>
 
@@ -188,7 +188,7 @@ const hasMonoFont =
 				document.documentElement.classList.add('motion-reduced');
 			}
 			const storedWallpaperMode = localStorage.getItem('wallpaper-mode');
-			const wallpaperMode = storedWallpaperMode === 'banner' || storedWallpaperMode === 'none'
+			const wallpaperMode = storedWallpaperMode === 'banner' || storedWallpaperMode === 'none' || storedWallpaperMode === 'fullscreen'
 				? storedWallpaperMode
 				: defaultWallpaperMode;
 			document.documentElement.dataset.wallpaperMode = wallpaperMode;
@@ -265,11 +265,17 @@ const hasMonoFont =
 		}
 		body[data-banner-layout="banner"] #main-layout { top: var(--banner-content-top); }
 		body[data-banner-layout="banner"] #top-row { height: calc(var(--banner-stage-height) - 4.5rem); }
+		/* fullscreen 壁纸：首页内容从整屏下方开始（hero/classic 一致） */
+		html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="hero"] body[data-current-page="home"] #main-layout,
+		html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body[data-current-page="home"] #main-layout { top: 100lvh; }
 		.navbar-hidden { opacity: 0; transform: translateY(-4rem); }
 	}
 	@media (min-width: 1024px) {
 		html[data-wallpaper-mode="banner"] body[data-banner-has-desktop="true"] #main-layout { top: var(--banner-content-top); }
 		html[data-wallpaper-mode="banner"] body[data-banner-has-desktop="true"] #top-row { height: calc(var(--banner-stage-height) - 4.5rem); }
+		/* fullscreen classic：非首页壁纸降为短横幅，内容上移 */
+		html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not([data-current-page="home"]) #main-layout { top: var(--banner-content-top); }
+		html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"] body:not([data-current-page="home"]) { --banner-stage-height: max(45vh, 380px); --banner-content-top: calc(max(45vh, 380px) - var(--banner-panel-overlap)); }
 	}
 	@media (max-width: 1023.98px) {
 		:root { --banner-stage-height: max(70vh, 28rem); }

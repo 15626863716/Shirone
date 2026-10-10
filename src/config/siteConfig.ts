@@ -31,7 +31,7 @@ export const siteConfig: SiteConfig = withUserConfig("site", {
 	// IANA time zone for precise post and moment timestamps. It is independent of lang.
 	timeZone: "Asia/Shanghai",
 	themeColor: {
-		hue: 315, // Default hue 0-360. 站点设计默认粉紫（偏二次元）；262 紫 / 345 粉 也可选
+		hue: 165, // Default hue 0-360. 对齐参考设计标准（青绿色调）；262 紫 / 315 粉紫 也可选
 		fixed: false, // Hide the theme color picker for visitors
 		// Dynamic Material 3 palette style (TonalSpot/Vibrant/Content/Expressive/Rainbow/FruitSalad/Monochrome/Neutral/Fidelity)
 		style: "tonalSpot",
@@ -39,10 +39,12 @@ export const siteConfig: SiteConfig = withUserConfig("site", {
 		// 差异仅在调色板派生（库的 colorSpec 静态为 2025 委托）
 		spec: "2025",
 	},
-	// 默认页面背景模式："banner" 使用壁纸横幅，"none" 使用主题纯色。
+	// 默认页面背景模式："fullscreen" 全屏壁纸（hero 视差 / classic 揭幕），
+	// "banner" 使用横幅壁纸，"none" 使用主题纯色。
 	// 访客在“显示设置”中的选择会保存在浏览器中，并覆盖这里的默认值。
 	wallpaperMode: {
-		defaultMode: "banner",
+		defaultMode: "fullscreen",
+		fullscreenLayout: "classic", // classic 揭幕式（对齐参考站）；可改 "hero" 固定视差式
 	},
 	// 页面背景纹理系统配置（5 大精美预设 + 零开销 HCT 动态取色）
 	texture: {

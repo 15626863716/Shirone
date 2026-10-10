@@ -26,10 +26,13 @@ export interface BannerState {
 
 export function resolveBannerState(input: BannerStateInput): BannerState {
 	const isHome = input.page === "home";
+	const isFullscreen = input.mode === "fullscreen";
+	const modeAllowsVisible = input.mode === "banner" || isFullscreen;
+	// fullscreen 模式下所有页面均显示（非首页由 CSS 控制高度/模糊，classic 移动端隐藏）
 	const visible =
-		input.mode === "banner" &&
+		modeAllowsVisible &&
 		input.imageCount > 0 &&
-		(input.viewport === "desktop" || isHome);
+		(isFullscreen || input.viewport === "desktop" || isHome);
 
 	const copyMode: BannerCopyMode = !visible
 		? null

@@ -319,6 +319,8 @@ export const id: Translation = {
 	[Key.wallpaperMode]: "Latar halaman",
 	[Key.wallpaperModeBanner]: "Banner",
 	[Key.wallpaperModeNone]: "Warna solid",
+	[Key.wallpaperModeFullscreen]: "Layar penuh",
+	[Key.scrollDown]: "Gulir ke bawah untuk melihat konten",
 	[Key.layoutMode]: "Tata letak",
 	[Key.layoutList]: "Daftar",
 	[Key.layoutGrid]: "Kisi",

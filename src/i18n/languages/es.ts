@@ -316,6 +316,8 @@ export const es: Translation = {
 	[Key.wallpaperMode]: "Fondo de página",
 	[Key.wallpaperModeBanner]: "Banner",
 	[Key.wallpaperModeNone]: "Color sólido",
+	[Key.wallpaperModeFullscreen]: "Pantalla completa",
+	[Key.scrollDown]: "Desplázate para ver el contenido",
 	[Key.texturePreset]: "Textura de fondo",
 	[Key.texturePresetNone]: "Ninguno",
 	[Key.texturePresetStarlight]: "Luz estelar",

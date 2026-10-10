@@ -3,7 +3,10 @@ export type { PermalinkConfig } from "./permalinkConfig.ts";
 import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
 import type { TextureConfig } from "./textureConfig";
 
-export type WallpaperMode = "banner" | "none";
+export type WallpaperMode = "banner" | "none" | "fullscreen";
+
+/** 全屏壁纸布局："classic" 随页滚动揭幕式（默认）；"hero" 固定整屏视差式 */
+export type FullscreenLayout = "classic" | "hero";
 
 export type TopAppBarContentAlign = "left" | "center";
 
@@ -63,12 +66,12 @@ export type BannerConfig = {
 		fadeDuration?: number;
 		/** 运镜呼吸动画模式："ken-burns"（默认，序列运镜）| "zoom-in" | "zoom-out" | "pan-left" | "pan-right" | "none" */
 		animation?:
-			| "ken-burns"
-			| "zoom-in"
-			| "zoom-out"
-			| "pan-left"
-			| "pan-right"
-			| "none";
+		| "ken-burns"
+		| "zoom-in"
+		| "zoom-out"
+		| "pan-left"
+		| "pan-right"
+		| "none";
 	};
 	waves: {
 		enable: boolean;
@@ -91,16 +94,16 @@ export type SiteConfig = {
 	displaySettings?: DisplaySettingsConfig;
 
 	lang:
-		| "en"
-		| "zh_CN"
-		| "zh_TW"
-		| "ja"
-		| "ko"
-		| "es"
-		| "th"
-		| "vi"
-		| "tr"
-		| "id";
+	| "en"
+	| "zh_CN"
+	| "zh_TW"
+	| "ja"
+	| "ko"
+	| "es"
+	| "th"
+	| "vi"
+	| "tr"
+	| "id";
 
 	/** IANA time zone used to interpret precise content timestamps. */
 	timeZone: string;
@@ -113,6 +116,8 @@ export type SiteConfig = {
 	};
 	wallpaperMode: {
 		defaultMode: WallpaperMode;
+		/** fullscreen 模式布局：classic（揭幕）/ hero（视差），默认 classic */
+		fullscreenLayout?: FullscreenLayout;
 	};
 	/** 页面背景纹理系统配置，支持布尔值直接开关或详细配置对象 */
 	texture?: boolean | TextureConfig;

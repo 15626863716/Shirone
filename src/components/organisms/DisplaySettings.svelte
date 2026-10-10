@@ -317,6 +317,7 @@ const stylePreviews = $derived(
                             options={[
                                 { value: "none", label: i18n(I18nKey.wallpaperModeNone) },
                                 { value: "banner", label: i18n(I18nKey.wallpaperModeBanner) },
+                                { value: "fullscreen", label: i18n(I18nKey.wallpaperModeFullscreen) },
                             ]}
                             bind:value={wallpaperMode}
                             label={i18n(I18nKey.wallpaperMode)}

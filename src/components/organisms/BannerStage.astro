@@ -5,6 +5,8 @@ import { resolveImageAsset } from "@utils/asset-utils";
 import { url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { siteConfig } from "@/config";
+import { i18n } from "@i18n/translation";
+import I18nKey from "@i18n/i18nKey";
 import type { SidebarPage } from "@/types/sidebarConfig";
 
 interface Props {
@@ -218,6 +220,7 @@ const initialMobileBanner = page === "home";
 	{siteConfig.banner.dim.enable && (
 		<div class="banner-stage__scrim" style={`--banner-dim-opacity: ${dimOpacity}`}></div>
 	)}
+	<div class="banner-stage__gradient" aria-hidden="true"></div>
 	{siteConfig.banner.homeText.enable && (
 		<div class="banner-stage__copy banner-stage__copy--home" data-banner-home-copy>
 			<h1>{siteConfig.banner.homeText.title}</h1>
@@ -249,6 +252,14 @@ const initialMobileBanner = page === "home";
 		</div>
 	</div>
 	{siteConfig.banner.waves.enable && <BannerWaves />}
+	<button
+		type="button"
+		class="banner-stage__scroll-down"
+		data-banner-scroll-down
+		aria-label={i18n(I18nKey.scrollDown)}
+	>
+		<Icon name="material-symbols:keyboard-arrow-down-rounded" aria-hidden="true" />
+	</button>
 </section>
 
 <script>
@@ -945,9 +956,59 @@ const initialMobileBanner = page === "home";
 
 	if (stage) {
 		syncBanner();
+
+		// fullscreen 模式滚动反馈：classic 揭幕（滚动后 waves/gradient 淡入）+ hero 壁纸模糊进度
+		let bannerScrollFrame: number | null = null;
+		const updateBannerScrollState = () => {
+			bannerScrollFrame = null;
+			const mode = getStoredWallpaperMode();
+			if (mode !== "fullscreen") {
+				if (document.body.hasAttribute("data-banner-reveal")) {
+					delete document.body.dataset.bannerReveal;
+				}
+				document.documentElement.style.removeProperty("--wallpaper-blur-progress");
+				return;
+			}
+			const scrollY = window.scrollY;
+			if (scrollY > 4) document.body.dataset.bannerReveal = "true";
+			else delete document.body.dataset.bannerReveal;
+			const progress = Math.min(
+				Math.max(scrollY / Math.max(window.innerHeight, 1), 0),
+				1,
+			);
+			document.documentElement.style.setProperty(
+				"--wallpaper-blur-progress",
+				progress.toFixed(4),
+			);
+		};
+		window.addEventListener(
+			"scroll",
+			() => {
+				if (bannerScrollFrame !== null) return;
+				bannerScrollFrame = window.requestAnimationFrame(updateBannerScrollState);
+			},
+			{ passive: true },
+		);
+		updateBannerScrollState();
+
+		// classic 全屏首页：下滑按钮滚动到首屏内容
+		stage
+			.querySelector<HTMLButtonElement>("[data-banner-scroll-down]")
+			?.addEventListener("click", () => {
+				document
+					.getElementById("main-layout")
+					?.scrollIntoView({
+						behavior: prefersReducedMotion() ? "auto" : "smooth",
+						block: "start",
+					});
+			});
+
 		if (!window.__shironeBannerBound) {
 			window.__shironeBannerBound = true;
-			window.addEventListener(WALLPAPER_MODE_CHANGE_EVENT, () => syncBanner());
+			window.addEventListener(WALLPAPER_MODE_CHANGE_EVENT, () => {
+				syncBanner();
+				updateBannerScrollState();
+			});
 			window.addEventListener(THEME_CHANGE_EVENT, () => syncBanner());
 			window.addEventListener("resize", () => {
 				if (currentViewport() === "desktop" && stage?.hidden === false) {
@@ -1132,8 +1193,90 @@ const initialMobileBanner = page === "home";
 	:global(html[data-wallpaper-mode="none"]) .banner-stage
 		display: none
 
+	/* === fullscreen 壁纸模式 === */
+	.banner-stage__gradient
+		position: absolute
+		z-index: 3
+		inset: auto 0 0
+		height: clamp(4rem, 12vh, 10rem)
+		background: linear-gradient(to bottom, transparent, var(--page-bg))
+		pointer-events: none
+
+	.banner-stage__scroll-down
+		display: none
+		position: absolute
+		bottom: 3rem
+		left: 50%
+		z-index: 4
+		padding: 0.25rem
+		border: 0
+		background: none
+		color: unquote("rgb(255 255 255 / 0.85)")
+		cursor: pointer
+		pointer-events: auto
+		transform: translate(-50%)
+		transition: opacity var(--m3e-duration-medium) var(--m3e-easing-standard), visibility var(--m3e-duration-medium) var(--m3e-easing-standard), color var(--m3e-duration-short) var(--m3e-easing-standard)
+
+		&:hover
+			color: #fff
+
+		&:focus-visible
+			border-radius: var(--shape-corner-full)
+			outline: 2px solid unquote("rgb(255 255 255 / 0.9)")
+			outline-offset: 2px
+
+		> :global(svg)
+			width: 2.5rem
+			height: 2.5rem
+
+	:global(html[data-wallpaper-mode="fullscreen"]) .banner-stage__image
+		transform: scale(1.05)
+
+	/* hero：壁纸固定整屏，非首页模糊；waves/gradient 关闭 */
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="hero"]) .banner-stage
+		position: fixed
+		inset: 0
+		height: 100vh
+		height: 100lvh
+		z-index: 0
+		pointer-events: none
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="hero"]) .banner-waves,
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="hero"]) .banner-stage__gradient
+		display: none !important
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="hero"]) body:not([data-current-page="home"]) .banner-stage__image
+		filter: blur(var(--overlay-blur, 0px))
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="hero"]) body[data-current-page="home"] .banner-stage__image
+		filter: blur(calc(var(--overlay-blur, 0px) * var(--wallpaper-blur-progress, 0)))
+
+	/* classic：壁纸随页滚动揭幕；首页整屏，滚动后 waves/gradient 淡入 */
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) .banner-stage
+		position: absolute
+		pointer-events: none
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body[data-current-page="home"] .banner-stage
+		height: 100vh
+		height: 100lvh
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body[data-current-page="home"] .banner-stage__scroll-down
+		display: inline-flex
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body[data-current-page="home"] .banner-waves,
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body[data-current-page="home"] .banner-stage__gradient
+		opacity: 0
+		transition: opacity var(--m3e-duration-long) var(--m3e-easing-standard)
+
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body[data-current-page="home"][data-banner-reveal] .banner-waves,
+	:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body[data-current-page="home"][data-banner-reveal] .banner-stage__gradient
+		opacity: 1
+
 	@media (max-width: 1023.98px)
-		:global(body:not([data-current-page="home"])) .banner-stage
+		:global(html[data-wallpaper-mode="banner"]) body:not([data-current-page="home"]) .banner-stage
+			display: none
+
+		:global(html[data-wallpaper-mode="fullscreen"][data-fullscreen-layout="classic"]) body:not([data-current-page="home"]) .banner-stage
 			display: none
 
 		.banner-stage

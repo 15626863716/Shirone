@@ -314,6 +314,8 @@ export const ja: Translation = {
 	[Key.wallpaperMode]: "ページ背景",
 	[Key.wallpaperModeBanner]: "バナー",
 	[Key.wallpaperModeNone]: "単色",
+	[Key.wallpaperModeFullscreen]: "全画面壁紙",
+	[Key.scrollDown]: "下にスクロールして内容を見る",
 	[Key.texturePreset]: "背景テクスチャ",
 	[Key.texturePresetNone]: "なし",
 	[Key.texturePresetStarlight]: "星空・キラキラ",

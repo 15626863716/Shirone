@@ -170,7 +170,6 @@ function handleRemove(item: ChipItem) {
 	--m3e-state-color: var(--on-surface)
 
 	&--disabled
-		opacity: 0.38
 		pointer-events: none
 
 	/* === 图标 === */
@@ -254,4 +253,15 @@ function handleRemove(item: ChipItem) {
 
 		&:active
 			background: unquote("color-mix(in srgb, var(--on-surface-variant) 12%, transparent)")
+
+	/* === 禁用态（官方 disabled 规范：容器 12% / 内容 38% / 描边 12%，置于形态之后确保覆盖选中态） === */
+	&--disabled
+		&.m3-chip--assist, &.m3-chip--filter, &.m3-chip--input, &.m3-chip--suggestion
+			opacity: 1
+			background: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+			color: var(--on-surface)
+			border-color: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+
+			.m3-chip__label, .m3-chip__icon, .m3-chip__avatar, .m3-chip__remove
+				opacity: 0.38
 </style>

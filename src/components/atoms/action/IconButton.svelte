@@ -239,8 +239,12 @@ function handleClick() {
 			--m3e-state-color: var(--primary)
 
 		&.m3-icon-button--disabled
+			/* 与 filled/tonal/outlined 统一机制：opacity 1 + 图标 38%（standard 容器透明，视觉等价官方 disabled-icon 38%） */
+			opacity: 1
 			color: var(--on-surface)
-			opacity: 0.38
+
+			.m3-icon-button__icon > :global(svg)
+				opacity: 0.38
 
 	&--filled
 		background: var(--primary)

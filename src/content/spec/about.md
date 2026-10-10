@@ -1,26 +1,23 @@
-# About Shirone
+# 关于白百合
 
-Welcome to the demo site of **Shirone** (白音) — an expressive, anime-inspired blog theme built on the **Material 3 Expressive (M3E)** design system.
+你好，我是**白百合**——一个喜欢安静做事、认真生活的普通 blogger。
 
-::github{repo="LyraVoid/Shirone"}
+> 座右铭：**如白百合般素净生长，向着光，也成为光。**
 
-## ✦ Design & Philosophy
+## ✦ 关于我
 
-Shirone aims to combine the warmth of expressive anime aesthetics with the rigor of modern web engineering:
+我偏爱一切素净而有力量的东西，就像白百合：不争不抢，却在自己的季节里认真绽放。平日里我喜欢阅读、写文字、折腾技术与设计，也热爱动画与音乐带来的那份纯粹感动。
 
-- **Dynamic Chromatic Spell**: Full dynamic HCT palette generation responding seamlessly to light/dark modes and user preferences with zero layout shifts.
-- **Seamless Shell Navigation**: Persistent application shell driven by Swup for continuous music playback, smooth page transitions, and preserved state.
-- **Rich Story Grimoire**: Markdown and MDX authoring with KaTeX math, Mermaid diagrams, interactive admonitions, expressive code blocks, and adaptive image galleries.
-- **Zero Extra Burden**: Optional integrations (comments, analytics, music widgets) load dynamically on demand — zero DOM footprint and zero bundle overhead when disabled.
+这个博客是用 [Shirone](https://github.com/LyraVoid/Shirone) 主题搭建的，它基于 Material 3 Expressive 设计系统——动态配色会随光线与心情变化，我希望这里也能给你同样柔和、舒适的阅读体验。
 
-## ✦ Tech Stack
+## ✦ 为什么写博客
 
-- **Framework**: [Astro 7](https://astro.build/) & [Svelte 5](https://svelte.dev/) (Runes-driven islands)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) & [Stylus](https://stylus-lang.com/)
-- **Design Standard**: [Material 3 Expressive](https://m3.material.io/)
-- **Typography**: Outfit & Yozai (悠哉圆体) with automated build-time subsetting
-- **Search Engine**: [Pagefind](https://pagefind.app/) offline full-text search
+写博客对我而言，是把零散的思考沉淀为完整表达的过程。技术笔记、生活随想、看过的好作品——都值得被认真记录。如果这些文字恰好也能帮到你、打动你，那就是额外的小确幸。
 
-## ✦ Credits
+## ✦ 这里会有什么
 
-- **Font**: [Yozai Font (悠哉字体)](https://github.com/lxgw/yozai-font) by [lxgw](https://github.com/lxgw)
+- **技术随笔**：折腾过程中的记录与踩坑总结
+- **生活碎碎念**：日常里的光与温度
+- **动画与音乐**：让生活变得更柔软的那些作品
+
+感谢你的到访，愿我们都能向着光，也成为光。

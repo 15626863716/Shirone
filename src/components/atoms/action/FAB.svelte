@@ -123,7 +123,17 @@ const radiusVar = (r: string) => RADIUS_TOKENS[r] ?? r;
 
 	&--disabled
 		pointer-events: none
-		opacity: 0.38
+		/* 官方 disabled 规范：容器 12%、内容 38% 分开控制，且不保留悬浮阴影（对齐 Button/IconButton） */
+		opacity: 1
+		background: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+		color: var(--on-surface)
+		box-shadow: none
+
+		.m3-fab__icon > :global(svg)
+			opacity: 0.38
+
+		.m3-fab__label
+			opacity: 0.38
 
 	/* === 尺寸（图标形态） === */
 	&--small

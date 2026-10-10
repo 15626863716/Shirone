@@ -148,4 +148,15 @@ const {
       --m3e-state-color: var(--on-primary)
       &:hover
         background: var(--primary)
+
+  /* 禁用态（官方 disabled 规范：容器 12% / 内容 38% / 描边 12%，与 Chips.svelte 保持一致，置于末尾覆盖选中态） */
+  &:disabled
+    opacity: 1
+    pointer-events: none
+    background: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+    color: var(--on-surface)
+    border-color: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+
+    .m3-chip__content
+      opacity: 0.38
 </style>

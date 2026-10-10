@@ -185,8 +185,16 @@ let {
             border: 1px solid var(--outline)
             background: transparent
 
-    /* disabled：两段整体禁用 */
+    /* disabled：两段整体禁用（官方：容器 12% / 内容 38% 分开控制，避免整钮双重透明，对齐 Button/FAB） */
     &:has(button:disabled)
-        opacity: 0.38
         pointer-events: none
+        background: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+        color: var(--on-surface)
+        box-shadow: none
+
+        .m3-split-button__leading, .m3-split-button__trailing
+            border-color: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+
+        .m3-split-button__content, .m3-split-button__trailing-icon
+            opacity: 0.38
 </style>

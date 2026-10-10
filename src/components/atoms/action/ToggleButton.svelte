@@ -87,16 +87,12 @@ function handleClick() {
         height: 1.25rem
         flex-shrink: 0
 
-    /* 形状变形：按压 6dp（未选中时）；选中态 12dp（优先级高于按压） */
-    &:active
+    /* 形状变形：仅在未选中时按压收缩 6dp；选中态恒为 12dp（官方行为，按压不改变选中形状） */
+    &:not(&--checked):active
         --tb-corner: 6px
 
     &--checked
         --tb-corner: var(--shape-corner-m)
-
-    &--disabled
-        opacity: 0.38
-        pointer-events: none
 
     /* === 变体颜色 === */
     &--filled
@@ -138,4 +134,18 @@ function handleClick() {
             color: var(--on-primary)
             box-shadow: var(--m3e-elevation-1)
             --m3e-state-color: var(--on-primary)
+
+    /* === 禁用态（官方 disabled 规范：容器 12% / 内容 38% 分开控制，置于变体之后确保覆盖选中色） === */
+    &--disabled
+        pointer-events: none
+
+        &.m3-toggle-button--filled, &.m3-toggle-button--tonal, &.m3-toggle-button--outlined, &.m3-toggle-button--elevated
+            opacity: 1
+            background: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+            color: var(--on-surface)
+            box-shadow: none
+            border-color: unquote("color-mix(in srgb, var(--on-surface) 12%, transparent)")
+
+            .m3-toggle-button__label, > :global(svg)
+                opacity: 0.38
 </style>

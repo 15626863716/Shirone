@@ -140,6 +140,24 @@ const mobileImages = {
 	dark: mobileDarkResponsive.map(({ fallback }) => fallback),
 };
 
+// 视频幻灯片：横幅列表允许混入 .mp4/.webm（public 绝对路径或远程 URL），
+// 由 <video> 层播放（静音、循环、object-fit cover），与图片层共用交叉淡入淡出
+const VIDEO_SOURCE_PATTERN = /\.(?:mp4|webm)(?:$|\?)/i;
+const isVideoSource = (src: string) => VIDEO_SOURCE_PATTERN.test(src);
+const firstImageIndex = (list: string[]) => list.findIndex((src) => !isVideoSource(src));
+const videoSlideUrls = [
+	...new Set(
+		[
+			...desktopSource.light,
+			...desktopSource.dark,
+			...mobileSource.light,
+			...mobileSource.dark,
+		]
+			.filter(isVideoSource)
+			.map((src) => (src.startsWith("/") ? url(src) : src)),
+	),
+];
+
 const dimOpacity = Math.min(Math.max(siteConfig.banner.dim.opacity, 0), 1);
 const rawSubtitles = siteConfig.banner.homeText.subtitle;
 const subtitleArray = Array.isArray(rawSubtitles)
@@ -152,11 +170,14 @@ const carouselFadeDuration = Math.min(
 	3000,
 );
 const carouselAnimation = siteConfig.banner.carousel?.animation ?? "ken-burns";
-const initialDesktopSrc = desktopImages.light[0] ?? "";
-const initialMobileSrc = mobileImages.light[0] ?? "";
+// 首屏 <img> 只取图片幻灯片；视频幻灯片由 <video> 层在运行时接管
+const dIdx = firstImageIndex(desktopSource.light);
+const mIdx = firstImageIndex(mobileSource.light);
+const initialDesktopSrc = dIdx >= 0 ? desktopImages.light[dIdx] : "";
+const initialMobileSrc = mIdx >= 0 ? mobileImages.light[mIdx] : "";
 const initialSrc = initialDesktopSrc || initialMobileSrc;
-const initialDesktopImage = desktopLightResponsive[0];
-const initialMobileImage = mobileLightResponsive[0];
+const initialDesktopImage = dIdx >= 0 ? desktopLightResponsive[dIdx] : undefined;
+const initialMobileImage = mIdx >= 0 ? mobileLightResponsive[mIdx] : undefined;
 const initialImage = initialDesktopImage ?? initialMobileImage;
 const initialMobileBanner = page === "home";
 ---
@@ -216,6 +237,19 @@ const initialMobileBanner = page === "home";
 			/>
 		</picture>
 		<img class="banner-stage__image banner-stage__image--back" alt="" />
+		{videoSlideUrls.map((videoSrc) => (
+			<video
+				class="banner-stage__image banner-stage__slide-video"
+				data-banner-slide-video
+				src={videoSrc}
+				muted
+				playsinline
+				loop
+				preload="metadata"
+				aria-hidden="true"
+				style={`object-position: ${siteConfig.banner.position ?? "center"};`}
+			/>
+		))}
 	</div>
 	{siteConfig.banner.dim.enable && (
 		<div class="banner-stage__scrim" style={`--banner-dim-opacity: ${dimOpacity}`}></div>
@@ -306,8 +340,12 @@ const initialMobileBanner = page === "home";
 
 	const stage = document.getElementById("banner-wrapper") as HTMLElement | null;
 	const layers = stage
-		? [...stage.querySelectorAll<HTMLImageElement>(".banner-stage__image")]
+		? [...stage.querySelectorAll<HTMLImageElement>("img.banner-stage__image")]
 		: [];
+	const videoLayer = stage
+		? stage.querySelector<HTMLVideoElement>("video.banner-stage__slide-video")
+		: null;
+	const isVideoSlide = (src: string) => /\.(?:mp4|webm)(?:$|\?)/i.test(src);
 	const subtitle = stage?.querySelector<HTMLParagraphElement>(
 		"[data-banner-home-copy] p",
 	);
@@ -711,7 +749,15 @@ const initialMobileBanner = page === "home";
 	}
 
 	function showImage(src: string, immediate: boolean) {
-		if (!layers.length) return;
+		if (!layers.length && !videoLayer) return;
+
+		// 视频幻灯片：交给 <video> 层播放（静音、循环、封面式铺满）
+		if (isVideoSlide(src) && videoLayer) {
+			void activateVideoLayer(src, immediate);
+			return;
+		}
+		deactivateVideoLayer();
+
 		const nextLayer: 0 | 1 = immediate
 			? runtime.activeLayer
 			: runtime.activeLayer === 0
@@ -728,6 +774,55 @@ const initialMobileBanner = page === "home";
 			if (next.src !== resolveImageUrl(src)) return;
 			crossfadeToLayer(nextLayer);
 		});
+	}
+
+	/** 淡出并暂停视频层（图片幻灯片激活时调用） */
+	function deactivateVideoLayer() {
+		if (!videoLayer) return;
+		videoLayer.pause();
+		videoLayer.classList.remove(
+			"banner-stage__image--active",
+			"banner-stage__image--fading",
+		);
+	}
+
+	/** 激活视频层：就绪后交叉淡入并循环播放（与图片层共用状态类） */
+	async function activateVideoLayer(src: string, immediate: boolean) {
+		if (!videoLayer) return;
+		const resolved = resolveImageUrl(src);
+		videoLayer.style.objectPosition = stage?.dataset.position || "center";
+		videoLayer.muted = true;
+		if (
+			videoLayer.src !== resolved ||
+			(!videoLayer.classList.contains("banner-stage__image--active") &&
+				videoLayer.readyState < 2)
+		) {
+			await new Promise<void>((resolve) => {
+				const done = () => resolve();
+				videoLayer.addEventListener("loadeddata", done, { once: true });
+				videoLayer.addEventListener("error", done, { once: true });
+				if (videoLayer.src !== resolved) videoLayer.src = src;
+				if (videoLayer.readyState >= 2) done();
+			});
+		}
+		if (videoLayer.src !== resolved) return;
+
+		// 交叉淡出图片层并停用其运镜
+		for (let i = 0; i < layers.length; i += 1) {
+			const layer = layers[i];
+			if (layer.classList.contains("banner-stage__image--active")) {
+				layer.classList.add("banner-stage__image--fading");
+			}
+			layer.classList.remove("banner-stage__image--active");
+			runtime.layerMotions[i as 0 | 1]?.cancel();
+			runtime.layerMotions[i as 0 | 1] = null;
+		}
+		if (immediate) videoLayer.classList.add("banner-stage__image--fading");
+		void videoLayer.offsetWidth;
+		videoLayer.classList.add("banner-stage__image--active");
+		if (!prefersReducedMotion() && !document.hidden) {
+			void videoLayer.play().catch(() => {});
+		}
 	}
 
 	function scheduleRotation(images: string[]) {
@@ -1024,13 +1119,20 @@ const initialMobileBanner = page === "home";
 					syncBanner();
 				});
 			document.addEventListener("visibilitychange", () => {
-					if (document.hidden) {
-						pauseLayerMotions();
-					} else {
-						resumeLayerMotions();
-					}
-					syncBanner();
-				});
+						if (document.hidden) {
+							pauseLayerMotions();
+							videoLayer?.pause();
+						} else {
+							resumeLayerMotions();
+							if (
+								videoLayer?.classList.contains("banner-stage__image--active") &&
+								!prefersReducedMotion()
+							) {
+								void videoLayer.play().catch(() => {});
+							}
+						}
+						syncBanner();
+					});
 			document.addEventListener("swup:visit:start", () => {
 				animateContextOut();
 			});

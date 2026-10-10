@@ -6,26 +6,34 @@ import { withUserConfig } from "../utils/config-overlay.ts";
  * 类型见 src/types/config.ts。
  */
 export const profileConfig: ProfileConfig = withUserConfig("profile", {
-	avatar: "assets/images/demo-avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "/assets/images/avatar.gif", // public 路径保留原图，GIF 动图原生播放
 	name: "白百合",
 	bio: "如白百合般素净生长，向着光，也成为光。",
 	links: [
 		{
-			name: "X",
-			icon: "fa7-brands:x-twitter", // Visit https://icones.js.org/ for icon codes
-			// You will need to install the corresponding icon set if it's not already included
-			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://x.com",
+			name: "QQ",
+			icon: "fa7-brands:qq",
+			url: "https://qm.qq.com",
 		},
 		{
-			name: "Steam",
-			icon: "fa7-brands:steam",
-			url: "https://store.steampowered.com",
+			name: "Bilibili",
+			icon: "fa7-brands:bilibili",
+			url: "https://space.bilibili.com",
 		},
 		{
 			name: "GitHub",
 			icon: "fa7-brands:github",
-			url: "https://github.com/LyraVoid/Shirone",
+			url: "https://github.com/15626863716",
+		},
+		{
+			name: "Email",
+			icon: "fa7-solid:envelope",
+			url: "mailto:15626863716@163.com",
+		},
+		{
+			name: "RSS",
+			icon: "fa7-solid:rss",
+			url: "/rss.xml",
 		},
 	],
 });

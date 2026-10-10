@@ -100,10 +100,17 @@ function handleClick() {
 		aria-controls={ariaControls}
 		onclick={handleClick}
 	>
-		{#if icon}
-			<span class="m3-icon-button__icon" aria-hidden="true"><Icon icon={checked && checkedIcon ? checkedIcon : icon} /></span>
-		{:else if children}
-			{@render children()}
+		{#if icon || children}
+			<span class="m3-icon-button__icon" aria-hidden="true">
+				{#if icon}
+					<span class="m3-icon-button__icon-layer" class:m3-icon-button__icon-layer--hidden={checked && !!checkedIcon}><Icon icon={icon} /></span>
+				{:else if children}
+					{@render children()}
+				{/if}
+				{#if icon && checkedIcon}
+					<span class="m3-icon-button__icon-layer" class:m3-icon-button__icon-layer--hidden={!(checked && checkedIcon)}><Icon icon={checkedIcon} /></span>
+				{/if}
+			</span>
 		{/if}
 	</a>
 {:else}
@@ -121,10 +128,17 @@ function handleClick() {
 		disabled={disabled}
 		onclick={handleClick}
 	>
-		{#if icon}
-			<span class="m3-icon-button__icon" aria-hidden="true"><Icon icon={checked && checkedIcon ? checkedIcon : icon} /></span>
-		{:else if children}
-			{@render children()}
+		{#if icon || children}
+			<span class="m3-icon-button__icon" aria-hidden="true">
+				{#if icon}
+					<span class="m3-icon-button__icon-layer" class:m3-icon-button__icon-layer--hidden={checked && !!checkedIcon}><Icon icon={icon} /></span>
+				{:else if children}
+					{@render children()}
+				{/if}
+				{#if icon && checkedIcon}
+					<span class="m3-icon-button__icon-layer" class:m3-icon-button__icon-layer--hidden={!(checked && checkedIcon)}><Icon icon={checkedIcon} /></span>
+				{/if}
+			</span>
 		{/if}
 	</button>
 {/if}
@@ -159,6 +173,7 @@ function handleClick() {
 
 	/* icon prop 模式图标容器；children 模式的图标尺寸由调用方控制（SSR 静态场景） */
 	&__icon
+		position: relative
 		display: inline-flex
 		align-items: center
 		justify-content: center
@@ -168,6 +183,26 @@ function handleClick() {
 			width: 1.25rem
 			height: 1.25rem
 			flex-shrink: 0
+
+	/* toggle 双图标层：默认/选中图标静态叠放 + 交叉淡入淡出，
+	   规避运行时图标切换可能出现的瞬间空白（选中态显示异常） */
+	&__icon-layer
+		display: inline-flex
+		align-items: center
+		justify-content: center
+		transition: opacity var(--m3e-duration-short) var(--m3e-easing-standard), transform var(--m3e-duration-short) var(--m3e-easing-standard)
+
+		> :global(svg)
+			width: 1.25rem
+			height: 1.25rem
+			flex-shrink: 0
+
+		&--hidden
+			position: absolute
+			inset: 0
+			opacity: 0
+			transform: scale(0.6)
+			pointer-events: none
 
 	&--disabled
 		pointer-events: none

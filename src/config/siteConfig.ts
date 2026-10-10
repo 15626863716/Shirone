@@ -56,10 +56,12 @@ export const siteConfig: SiteConfig = withUserConfig("site", {
 	banner: {
 		// 推荐将图片放入 src/assets，并填写相对 src 的路径，以启用构建期 AVIF/WebP 响应式优化。
 		// 以 "/" 开头的 public 路径与远程 URL 仍可用，但会保留原图、不生成候选。
+		// 支持 .mp4/.webm 视频幻灯片（public 绝对路径或远程 URL）：静音循环、
+		// object-fit cover 铺满无黑边，与图片层共用交叉淡入淡出（对齐参考站背景视频）。
 		// desktop 用于 >= 1024px；mobile 仅用于 < 1024px 的首页，手机非首页不显示壁纸。
 		// 数组顺序就是轮播顺序；只需要静态 Banner 时，每组保留一张图片即可。
 		src: {
-			desktop: ["assets/images/banner/desktop/2.webp"],
+			desktop: ["/videos/liz-and-the-blue-bird.mp4"],
 			mobile: ["assets/images/banner/mobile/2.webp"],
 		},
 		// 图片裁切焦点："top"、"center" 或 "bottom"。

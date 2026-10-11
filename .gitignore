@@ -48,6 +48,7 @@ src/assets/fonts/.subset/
 
 # generated local icon collection
 src/generated/local-icon-collections.ts
+*.tmp
 *.iml
 
 # anime snapshot data & downloaded covers
